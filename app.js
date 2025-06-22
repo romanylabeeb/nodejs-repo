@@ -6,9 +6,10 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
+const csrf= require('csurf');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
-
+const csrfMiddle= require("./middelware/csrf-middle");
 const MONGODB_URI =
   'mongodb://localhost:27017/shop';
 
@@ -36,6 +37,10 @@ app.use(
   })
 );
 
+//csrf
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -47,7 +52,7 @@ app.use((req, res, next) => {
     })
     .catch(err => console.log(err));
 });
-
+app.use(csrfMiddle);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -57,7 +62,7 @@ app.use(errorController.get404);
 mongoose
   .connect(MONGODB_URI)
   .then(result => {
-    User.find().then(user => {
+        User.find().then(user => {
       console.log("users:",user)
       // if (!user) {
       //   const user = new User({

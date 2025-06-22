@@ -1,3 +1,7 @@
+.DS_Store
+# views/.DS_Store
+public/.DS_Store
+views/.DS_Store
 # Logs
 logs
 *.log
@@ -134,3 +138,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
